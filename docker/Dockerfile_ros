@@ -1,0 +1,24 @@
+ARG ROSDISTRO=melodic
+FROM ros:${ROSDISTRO}-ros-base
+ARG ROSDISTRO
+
+ARG WORK_DIR=/ros_ws
+WORKDIR ${WORK_DIR}
+
+# install tmux and ROSBridge
+RUN apt-get update && apt-get install -y \
+    tmux \
+    ros-${ROSDISTRO}-rosbridge-server && \
+    rm -rf /var/lib/apt/lists/*
+
+# install catkin package
+RUN mkdir src
+COPY ./ros_pose_gen src
+RUN . /opt/ros/${ROSDISTRO}/setup.sh && \
+    catkin_make
+
+# RUN echo "source ${WORK_DIR}/devel/setup.bash" >> /root/.bashrc
+ENV WORK_DIR=${WORK_DIR}
+ADD docker/entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+ENTRYPOINT [ "./entrypoint.sh" ]

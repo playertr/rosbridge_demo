@@ -1,0 +1,18 @@
+FROM ubuntu:18.04
+
+ARG WORK_DIR=/cpp_client
+WORKDIR ${WORK_DIR}
+
+# install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libcpprest-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# build C++ client
+COPY ./cpp_client .
+RUN mkdir src && \
+    cd src && \
+    cmake .. && \
+    make
