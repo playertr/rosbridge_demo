@@ -1,0 +1,3 @@
+int32 NumPoses
+---
+geometry_msgs/Pose[] Poses

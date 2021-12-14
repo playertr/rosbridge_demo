@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="port" value="9090" />
+  </include>
+
+  <node name="pose_service_node" pkg="ros_pose_gen" type="random_pose_server.py"/>
+</launch>
