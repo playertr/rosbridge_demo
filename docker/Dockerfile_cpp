@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 # build C++ client
 COPY ./cpp_client .
-RUN mkdir src && \
-    cd src && \
+RUN mkdir build && \
+    cd build && \
     cmake .. && \
     make
