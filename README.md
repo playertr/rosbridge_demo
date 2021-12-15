@@ -31,9 +31,9 @@ This demo can be run in Docker containers, which greatly simplifies installation
     ```
 3. Download and run the `rosbridge_demo_cpp` container. This container:
     * connects to the rosbridge websocket
-    * requests two random poses and prints the response
+    * requests two (from argument) random poses and prints the response
     ```
-    docker run -it --net=host playertr/rosbridge_demo_cpp build/client
+    docker run -it --net=host playertr/rosbridge_demo_cpp build/client 2
     ```
 
 ## Source
