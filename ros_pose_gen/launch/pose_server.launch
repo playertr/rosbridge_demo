@@ -1,7 +1,17 @@
 <launch>
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+  <arg name="run_rostful" value="true"/>
+  <arg name="run_rosbridge" value="true"/>
+
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"
+            if="$(arg run_rosbridge)">
     <arg name="port" value="9090" />
   </include>
+
+  <node name="rostful" pkg="rostful" type="server" 
+            args="--port 8080"
+            if="$(arg run_rostful)"/>
+
+ <!-- publishes chatter service add_two_ints -->
 
   <node name="pose_service_node" pkg="ros_pose_gen" type="random_pose_server.py"/>
 </launch>

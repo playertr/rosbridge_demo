@@ -1,4 +1,4 @@
-ARG ROSDISTRO=melodic
+ARG ROSDISTRO=noetic
 FROM ros:${ROSDISTRO}-ros-base
 ARG ROSDISTRO
 
@@ -7,15 +7,23 @@ WORKDIR ${WORK_DIR}
 
 # install tmux and ROSBridge
 RUN apt-get update && apt-get install -y \
-    tmux \
-    ros-${ROSDISTRO}-rosbridge-server && \
+    tmux python3-pip git \
+    ros-${ROSDISTRO}-rosbridge-server \
+    python3-catkin-tools \
+    ros-${ROSDISTRO}-roslint && \
     rm -rf /var/lib/apt/lists/*
 
-# install catkin package
+# Install vcstool to check out rostful
+RUN pip3 install vcstool jwt
+
 RUN mkdir src
-COPY ./ros_pose_gen src
+COPY ros_pose_gen/ src/ros_pose_gen/
+
+# Install rostful from source using the .repos file
+RUN vcs import --input src/ros_pose_gen/ros_pose_gen.repos src/
+
 RUN . /opt/ros/${ROSDISTRO}/setup.sh && \
-    catkin_make
+    catkin build
 
 # RUN echo "source ${WORK_DIR}/devel/setup.bash" >> /root/.bashrc
 ENV WORK_DIR=${WORK_DIR}
