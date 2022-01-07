@@ -1,5 +1,5 @@
 
-DOCKER_IMAGE_BASE=amarburg/rosbridge_demo
+DOCKER_IMAGE_BASE=playertr/rosbridge_demo
 DOCKER_IMAGE_ROS=${DOCKER_IMAGE_BASE}_ros
 DOCKER_IMAGE_CLIENT=${DOCKER_IMAGE_BASE}_client
 
