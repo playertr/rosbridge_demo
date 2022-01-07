@@ -15,7 +15,7 @@ build-client-image: docker/Dockerfile_client
 	docker build . -f docker/Dockerfile_client -t ${DOCKER_IMAGE_CLIENT}
 
 push:
-	docker push ${DOCKER_IMAGE_ROS} ${DOCKER_IMAGE_CLIENT}
+	docker push ${DOCKER_IMAGE_ROS} && docker push ${DOCKER_IMAGE_CLIENT}
 
 
 #
