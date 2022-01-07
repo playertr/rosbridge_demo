@@ -8,10 +8,9 @@
   </include>
 
   <node name="rostful" pkg="rostful" type="server" 
-            args="--port 8080"
+            args="--port 8080 --publishes chatter --service add_two_ints"
             if="$(arg run_rostful)"/>
 
- <!-- publishes chatter service add_two_ints -->
 
   <node name="pose_service_node" pkg="ros_pose_gen" type="random_pose_server.py"/>
 </launch>

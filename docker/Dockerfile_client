@@ -1,14 +1,20 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ARG WORK_DIR=/cpp_client
 WORKDIR ${WORK_DIR}
 
+## for apt to be noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBCONF_NONINTERACTIVE_SEEN=true
+
 # install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    cmake \
+    cmake python3-pip \
     libcpprest-dev && \
     rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install roslibpy jwt
 
 # build C++ client
 COPY ./cpp_client .
@@ -16,3 +22,5 @@ RUN mkdir build && \
     cd build && \
     cmake .. && \
     make
+
+COPY ./roslibpy_client/roslibpy_client.py .

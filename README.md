@@ -60,11 +60,32 @@ This demo can be run in Docker containers, which greatly simplifies installation
     make run-ros-image
     ```
 
-3. Download and run the `rosbridge_demo_cpp` container. This container:
+1. A Download and run the `rosbridge_demo_cpp` container. This container:
     * connects to the rosbridge websocket
     * requests two (from argument) random poses and prints the response
     ```
     docker run -it --net=host playertr/rosbridge_demo_client build/client 2
+    ```
+
+1. Install roslibpy and run the python client directly (on any computer):
+
+    ```
+    pip install roslibpy
+    roslibpy_client/roslibpy_client.py
+    ```
+
+1. Access the rostful interface using your web browser:
+
+    ```
+    http://localhost:8080/chatter
+    ```
+
+    (still working on a demo for the service call)
+
+    Rostful publishes some meta-information at particular URLs:
+
+    ```
+    http://localhost:8080/_rosdef
     ```
 
 ## Source
@@ -122,7 +143,7 @@ https://github.com/Microsoft/cpprestsdk
 
 
 ---
-## Building the docker images
+## (Re-)Building the docker images
 
 Rules for rebuilding the Dockerfile are in the [Makefile](Makefile) as the root
 of this repo.   The docker images can be rebuilt by running:
