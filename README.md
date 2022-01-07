@@ -51,7 +51,7 @@ This demo can be run in Docker containers, which greatly simplifies installation
     * starts a rostful server on port 8080
 
     ```
-    docker run -it playertr/rosbridge_demo_ros -p 8080:8080 -p 9090:9090 roslaunch ros_pose_gen pose_server.launch
+    docker run -it -p 8080:8080 -p 9090:9090 playertr/rosbridge_demo_ros roslaunch ros_pose_gen pose_server.launch
     ```
 
     or
@@ -60,7 +60,7 @@ This demo can be run in Docker containers, which greatly simplifies installation
     make run-ros-image
     ```
 
-1. A Download and run the `rosbridge_demo_cpp` container. This container:
+1. Download and run the `rosbridge_demo_cpp` container. This container:
     * connects to the rosbridge websocket
     * requests two (from argument) random poses and prints the response
     ```
