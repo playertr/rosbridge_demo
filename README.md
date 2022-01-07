@@ -1,10 +1,22 @@
 # rosbridge_demo
-A demonstration of basic rosbridge functionality in a ROS system.
+A demonstration of basic rosbridge and rostful functionality in a ROS system.
 
-As shown in the diagram, rosbridge exposes a JSON interface to a ROS service.
-Specifically, the service `/gen_random_poses` generates a requested number of 6DOF poses. A simple client node, written in C++, requests poses through the JSON API.
+As shown in the diagram, rosbridge exposes a JSON interface to a ROS service,
+while rostful presents a REST interface via an HTTP interface.
 
-rosbridge automatically provides a websocket JSON API through the ROSBridge Protocol, with a schema like
+## Sample node
+
+The ROS package `ros_pose_gen` contains a server (written in Python) which
+provides a set of sample ROS topics and services, which can then be accessed
+either through rosbridge or rostful.
+
+ `/gen_random_poses` generates a requested number of 6DOF poses
+
+## Access via rosbridge
+
+Rosbridge converts ROS messages to a JSON format, and expose those results
+on a websocket, with a schema like
+
 ```JSON
 { 
   "op": "call_service", 
@@ -12,28 +24,68 @@ rosbridge automatically provides a websocket JSON API through the ROSBridge Prot
   "args": [2]
 }
 ```
+
 that is [well-documented](https://github.com/RobotWebTools/rosbridge_suite/blob/ros1/ROSBRIDGE_PROTOCOL.md). Because it is documented, actively maintained, and automically configured, it is a potentially scalable choice for ROS JSON API needs. 
 
 ![diagram](figures/diagram.png)
+
+
+The directory `cpp_client` contains a C++ client which interacts with the
+rosbridge interface in "raw JSON."
+
+The directory `roslibpy_client` uses [roslibpy](https://roslibpy.readthedocs.io/en/latest/index.html), which must be installed.  **Note:** that `roslibpy` **does not** require ROS to be installed (that's the magic of rosbridge), you should be able to install it on any computer
+using `pip`.
+
+
 
 ---
 # Installation and Usage
 
 ## Docker (Recommended)
+
 This demo can be run in Docker containers, which greatly simplifies installation. Docker is supported on Windows, Mac, and many flavors of Linux including Windows Subsystem for Linux. I uploaded images on Docker Hub that you can download with the following commands.
 1. Install Docker Engine by following the official [instructions](https://docs.docker.com/engine/install/).
 2. Download and run the `rosbridge_demo_ros` container. This container:
     * provides a ROS service that generates a list of random poses
-    * starts a rosbridge server
+    * starts a rosbridge server on port 9090
+    * starts a rostful server on port 8080
 
     ```
-    docker run -it --net=host playertr/rosbridge_demo_ros roslaunch ros_pose_gen pose_server.launch
+    docker run -it playertr/rosbridge_demo_ros -p 8080:8080 -p 9090:9090 roslaunch ros_pose_gen pose_server.launch
     ```
-3. Download and run the `rosbridge_demo_cpp` container. This container:
+
+    or
+
+    ```
+    make run-ros-image
+    ```
+
+1. A Download and run the `rosbridge_demo_cpp` container. This container:
     * connects to the rosbridge websocket
     * requests two (from argument) random poses and prints the response
     ```
-    docker run -it --net=host playertr/rosbridge_demo_cpp build/client 2
+    docker run -it --net=host playertr/rosbridge_demo_client build/client 2
+    ```
+
+1. Install roslibpy and run the python client directly (on any computer):
+
+    ```
+    pip install roslibpy
+    roslibpy_client/roslibpy_client.py
+    ```
+
+1. Access the rostful interface using your web browser:
+
+    ```
+    http://localhost:8080/chatter
+    ```
+
+    (still working on a demo for the service call)
+
+    Rostful publishes some meta-information at particular URLs:
+
+    ```
+    http://localhost:8080/_rosdef
     ```
 
 ## Source
@@ -91,9 +143,18 @@ https://github.com/Microsoft/cpprestsdk
 
 
 ---
-## Building the docker images
+## (Re-)Building the docker images
+
+Rules for rebuilding the Dockerfile are in the [Makefile](Makefile) as the root
+of this repo.   The docker images can be rebuilt by running:
+
 ```
-cd cpp_client
-docker build . -f docker/Dockerfile_ros -t playertr/rosbridge_demo_ros
-docker build . -f docker/Dockerfile_cpp -t playertr/rosbridge_demo_cpp
+make images
+```
+
+The individual image can be built by:
+
+```
+make build-ros-image
+make build-client-image
 ```
