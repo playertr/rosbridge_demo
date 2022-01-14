@@ -37,6 +37,26 @@ The directory `roslibpy_client` uses [roslibpy](https://roslibpy.readthedocs.io/
 using `pip`.
 
 
+## Access vis rostful
+
+Rostful publishes a REST interface over HTTP.  In the container, it publishes on port 8080.
+
+Any web browser can be used to read a published topic via GET by opening the address: `http://localhost:8080/chatter`
+
+![Rostful example](figures/rostful_example.jpg)
+
+ROS services are called with a PUT, which require a little more work.  From the command line:
+
+```
+% curl -X POST http://localhost:8080/add_two_ints -H 'Content-Type: application/json' -d '{"a": 1, "b": 2}'
+
+{"sum": 3, "_format": "ros"}
+```
+
+POST is also used to publish *to* ROS topics.
+
+Rostful publishes some meta-information at URLs `http://localhost:8080/_rosdef`
+
 
 ---
 # Installation and Usage
@@ -74,19 +94,7 @@ This demo can be run in Docker containers, which greatly simplifies installation
     roslibpy_client/roslibpy_client.py
     ```
 
-1. Access the rostful interface using your web browser:
-
-    ```
-    http://localhost:8080/chatter
-    ```
-
-    (still working on a demo for the service call)
-
-    Rostful publishes some meta-information at particular URLs:
-
-    ```
-    http://localhost:8080/_rosdef
-    ```
+1. Access the rostful interface as described above.
 
 ## Source
 If you aren't using Docker, then you can still install all the dependencies locally in an Ubuntu machine. Here's a sketch of how to do that. For more detail, refer to the Docker installation scripts in `docker/Dockerfile_ros` and `docker/Dockerfile_cpp` and to the referenced instructions.
